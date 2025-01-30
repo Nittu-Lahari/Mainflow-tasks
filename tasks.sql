@@ -1,45 +1,26 @@
-SELECT * from students;
+use studentmanagement;
 
-#task 1:calculate the avg score for each subject
-select 
-	avg(MathScore) as AvgMathScore,
-    avg(ScienceScore) as AvgScienceScore,
-    avg(EnglishScore) as AvgEnglishScore
-from students;
+#TASK 1:
+SELECT students.Name, courses.course_name
+FROM students
+INNER JOIN enrolments ON students.studentId = enrolments.student_id
+INNER JOIN courses ON enrolments.course_id = courses.course_id;
 
-#task 2:Find the student with the highest total score across all subjects to identify the top performer.
-select 
-	studentid,
-    name,
-    (MathScore + ScienceScore + EnglishScore) as TotalScore
-from students
-order by TotalScore desc;
+#TASK 2:
+SELECT courses.course_id, courses.course_name, COUNT(enrolments.student_id) AS NumberOfStudents
+FROM courses
+LEFT JOIN enrolments ON courses.course_id = enrolments.course_id
+GROUP BY courses.course_id, courses.course_name
+order by courses.course_id;
 
-#task 3:Find the average score for male and female students to compare performance by gender.
-select 
-	avg(MathScore) as AvgMathScore,
-    avg(ScienceScore) as AvgScienceScore,
-    avg(EnglishScore) as AvgEnglishScore
-from students
-group by Gender;
+#task 3
+select student_id, count(course_id) as NumberOfCourses
+from enrolments
+group by student_id
+having count(course_id)>1 ;
 
-#task 4:Count the number of students in each grade to observe grade distributions.
-select
-	Grade,
-    count(*) as StudentCount
-from students
-group by Grade
-order by Grade;
-
-#task 5:Identify students whose Math score is above 80 to highlight high achievers in Math.
-select
-	Name, MathScore
-from students
-where MathScore>80;
-
-#task 6:Update the grade of a student with a specific Student ID to reflect changes or corrections.
-update students
-set Grade = 'A+'
-where studentid=1 or studentid=7;
-
-select * from students where studentid=1 or studentid=7
+#task 4
+select courses.course_id, courses.course_name
+from courses
+LEFT JOIN enrolments ON courses.course_id = enrolments.course_id
+where enrolments.enrolment_id is NULL;
